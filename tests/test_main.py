@@ -1,6 +1,6 @@
 import pytest
 
-from justone_compare.main import WordPair, is_duplicates
+from justone_compare.main import WordPair, is_duplicates, find_duplicates, RoundWords
 
 
 @pytest.mark.parametrize("word1, word2, expected_result",
@@ -49,5 +49,13 @@ from justone_compare.main import WordPair, is_duplicates
                              ("Колечко", "Кольцо", True),
                              ("сова", "Сову", True),
                          ])
-def test_compare_words(word1: str, word2: str, expected_result: bool):
+def test_is_duplicates(word1: str, word2: str, expected_result: bool):
     assert is_duplicates(WordPair(word1=word1, word2=word2)) == expected_result
+
+
+@pytest.mark.parametrize("words, expected_result",
+                         [
+                             (["Дождевая", "Дождь"], [True, True]),
+                         ])
+def test_find_duplicates(words: list[str], expected_result: list[bool]):
+    assert find_duplicates(RoundWords(words=words)).words == expected_result
