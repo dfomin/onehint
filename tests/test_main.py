@@ -56,6 +56,12 @@ def test_is_duplicates(word1: str, word2: str, expected_result: bool):
 @pytest.mark.parametrize("words, expected_result",
                          [
                              (["Дождевая", "Дождь"], [True, True]),
+                             ([
+                                 "Анька", "Светленькая", "барби", "шведка", "Уизерспун", "Шоколаде", "Стереотипная", "законе"
+                             ], [False] * 8),
+                             (["Собирательное", "Будильник", "хлебница", "Фуникулер", "Эскалатор", "Горнолыжный", "канатка", "Бугель"],
+                              [False] * 8),
+                             (["Дача", "Сдвиг", "усадьба", "хаусище", "Телепередача"], [False] * 5),
                          ])
 def test_find_duplicates(words: list[str], expected_result: list[bool]):
     assert find_duplicates(RoundWords(words=words)).words == expected_result
