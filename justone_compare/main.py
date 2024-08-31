@@ -1,5 +1,3 @@
-from difflib import SequenceMatcher
-
 from Levenshtein import distance
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -7,13 +5,32 @@ from pydantic import BaseModel
 app = FastAPI()
 
 
+class RoundWords(BaseModel):
+    words: list[str]
+
+
+class RoundDuplicates(BaseModel):
+    words: list[bool]
+
+
 class WordPair(BaseModel):
     word1: str
     word2: str
 
 
-@app.post("/compare")
-def compare_words(pair: WordPair) -> bool:
+@app.post("/find_duplicates")
+def find_duplicates(round_words: RoundWords) -> RoundDuplicates:
+    duplicates = [False] * len(round_words.words)
+    for i in range(len(duplicates)):
+        for j in range(i + 1, len(duplicates)):
+            if is_duplicates(WordPair(word1=round_words.words[i], word2=round_words.words[j])):
+                duplicates[i] = True
+                duplicates[j] = True
+    return RoundDuplicates(words=duplicates)
+
+
+@app.post("/is_duplicates")
+def is_duplicates(pair: WordPair) -> bool:
     word1 = normalize(pair.word1)
     word2 = normalize(pair.word2)
 
