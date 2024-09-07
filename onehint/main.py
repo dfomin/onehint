@@ -18,6 +18,11 @@ class WordPair(BaseModel):
     word2: str
 
 
+@app.post("/version")
+def version() -> int:
+    return 1
+
+
 @app.post("/find_duplicates")
 def find_duplicates(round_words: RoundWords) -> RoundDuplicates:
     duplicates = [False] * len(round_words.words)
@@ -78,10 +83,32 @@ def common_size(word1: str, word2: str) -> int:
     return result
 
 
+def remove_repeating(word: str) -> str:
+    result = ""
+    prev = None
+    for ch in word:
+        if ch != prev:
+            if prev:
+                result += prev
+            prev = ch
+    if prev:
+        result += prev
+    return result
+
+
 def normalize(word: str) -> str:
     mapping = {
         "-": "",
         "ё": "е",
+        "sh": "ш",
+        "ch": "ч",
+        "th": "c",
+        "ph": "ф",
+        "wh": "в",
+        "ck": "к",
+        "ee": "и",
+        "oo": "у",
+        "ea": "и",
         "a": "а",
         "b": "б",
         "c": "ц",
@@ -110,4 +137,8 @@ def normalize(word: str) -> str:
         "z": "з",
     }
 
-    return "".join([mapping.get(ch, ch) for ch in word.lower()])
+    word = word.lower()
+    for en, ru in mapping.items():
+        word = word.replace(en, ru)
+
+    return remove_repeating(word)

@@ -1,6 +1,6 @@
 import pytest
 
-from justone_compare.main import WordPair, is_duplicates, find_duplicates, RoundWords
+from onehint.main import WordPair, is_duplicates, find_duplicates, RoundWords
 
 
 @pytest.mark.parametrize("word1, word2, expected_result",
@@ -62,6 +62,9 @@ def test_is_duplicates(word1: str, word2: str, expected_result: bool):
                              (["Собирательное", "Будильник", "хлебница", "Фуникулер", "Эскалатор", "Горнолыжный", "канатка", "Бугель"],
                               [False] * 8),
                              (["Дача", "Сдвиг", "усадьба", "хаусище", "Телепередача"], [False] * 5),
+                             (["Швепс", "Лосьон", "ironman", "хинин", "Увлажняющий", "умывашка", "Rich", "Shweppes", "Джин", "гипер"],
+                              [True, False, False, False, False, False, False, True, False, False]),
+                             (["куценко", "убийца", "queen", "мы", "Леон", "Фича", "фича"], [False, False, False, False, False, True, True]),
                          ])
 def test_find_duplicates(words: list[str], expected_result: list[bool]):
     assert find_duplicates(RoundWords(words=words)).words == expected_result
