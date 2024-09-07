@@ -25,5 +25,8 @@ jobs:
     - name: Push Docker image to Docker Hub
       run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/onehint:${{ github.sha }}
 
+    - name: Push Docker image with latest tag
+      run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/onehint:latest
+
     - name: Log out from Docker Hub
       run: docker logout
