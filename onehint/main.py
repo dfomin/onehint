@@ -1,5 +1,6 @@
 from collections import defaultdict
 
+import uvicorn
 from Levenshtein import distance
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -25,7 +26,7 @@ def version() -> int:
     return 1
 
 
-@app.post("/find_duplicates")
+@app.post("/v1/find_duplicates")
 def find_duplicates(round_words: RoundWords) -> RoundDuplicates:
     duplicates = [[] for _ in range(len(round_words.words))]
     for i in range(len(duplicates)):
@@ -36,7 +37,7 @@ def find_duplicates(round_words: RoundWords) -> RoundDuplicates:
     return RoundDuplicates(words=duplicates)
 
 
-@app.post("/is_duplicates")
+@app.post("/v1/is_duplicates")
 def is_duplicates(pair: WordPair) -> bool:
     word1 = normalize(pair.word1)
     word2 = normalize(pair.word2)
@@ -102,16 +103,16 @@ def normalize(word: str) -> str:
     mapping = {
         "-": "",
         "ё": "е",
-        "qu": "кв",
-        "sh": "ш",
-        "ch": "ч",
-        "th": "c",
-        "ph": "ф",
-        "wh": "в",
-        "ck": "к",
-        "ee": "и",
-        "oo": "у",
-        "ea": "и",
+        # "qu": "кв",
+        # "sh": "ш",
+        # "ch": "ч",
+        # "th": "c",
+        # "ph": "ф",
+        # "wh": "в",
+        # "ck": "к",
+        # "ee": "и",
+        # "oo": "у",
+        # "ea": "и",
         "a": "а",
         "b": "б",
         "c": "ц",
@@ -140,8 +141,13 @@ def normalize(word: str) -> str:
         "z": "з",
     }
 
-    word = word.lower()
-    for en, ru in mapping.items():
-        word = word.replace(en, ru)
+    # word = word.lower()
+    # for en, ru in mapping.items():
+    #     word = word.replace(en, ru)
+    #
+    # return remove_repeating(word)
+    return "".join([mapping.get(ch, ch) for ch in word.lower()])
 
-    return remove_repeating(word)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
