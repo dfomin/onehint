@@ -1,3 +1,5 @@
+from difflib import SequenceMatcher
+
 from Levenshtein import distance
 
 from onehint.utils import fuzzy_common_size, remove_repeating
@@ -14,8 +16,8 @@ def is_duplicates(word1: str, word2: str) -> bool:
         return True
 
     dist = distance(word1, word2)
-    # common_substring = SequenceMatcher(None, word1, word2).find_longest_match().size
-    common_substring = fuzzy_common_size(word1, word2)
+    common_substring = SequenceMatcher(None, word1, word2).find_longest_match().size
+    # common_substring = fuzzy_common_size(word1, word2)
 
     if common_substring == len(word1) and len(word1) >= 3:
         return True
@@ -81,4 +83,5 @@ def normalize(word: str) -> str:
     for en, ru in mapping.items():
         word = word.replace(en, ru)
 
-    return remove_repeating(word)
+    # return remove_repeating(word)
+    return word

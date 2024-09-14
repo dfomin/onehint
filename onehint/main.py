@@ -22,9 +22,28 @@ class WordPair(BaseModel):
     word2: str
 
 
+class VersionInfo(BaseModel):
+    version: int
+    description: str
+
+
 @app.post("/version")
 def version() -> int:
-    return 1
+    return 2
+
+
+@app.post("/versions_info")
+def versions_info() -> list[VersionInfo]:
+    return [
+        VersionInfo(
+            version=1,
+            description="Original sivyhk's algorithms from C#"
+        ),
+        VersionInfo(
+            version=2,
+            description="Improved english letters mapping"
+        )
+    ]
 
 
 @app.post("/v1/find_duplicates")
