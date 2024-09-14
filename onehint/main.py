@@ -1,12 +1,10 @@
 from typing import Callable
 
 import uvicorn
-from Levenshtein import distance
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 from onehint.checkers import v1, v2
-from onehint.utils import fuzzy_common_size
 
 app = FastAPI()
 
