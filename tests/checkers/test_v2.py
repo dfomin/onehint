@@ -1,15 +1,15 @@
 import pytest
 
-from onehint.checkers import v2
+from onehint.checkers.v2 import APIv2
 
 
 @pytest.mark.parametrize("word, expected_result",
                          [
                              ("Берёза", "береза"),
-                             ("Shweppes", "швепес"),
+                             ("Shweppes", "швеппес"),
                          ])
 def test_normalize(word: str, expected_result: str):
-    assert v2.normalize(word) == expected_result
+    assert APIv2().normalize(word) == expected_result
 
 
 @pytest.mark.parametrize("word1, word2, expected_result",
@@ -20,4 +20,4 @@ def test_normalize(word: str, expected_result: str):
                              ("test", "asdf", False),
                          ])
 def test_is_duplicates(word1: str, word2: str, expected_result: bool):
-    assert v2.is_duplicates(word1, word2) == expected_result
+    assert APIv2().is_duplicates(word1, word2) == expected_result

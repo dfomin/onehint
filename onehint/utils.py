@@ -16,14 +16,12 @@ def fuzzy_common_size(word1: str, word2: str, fraction: int = 5) -> int:
     return result
 
 
-def remove_repeating(word: str) -> str:
+def remove_repeating_letters(word: str) -> str:
     result = ""
-    prev = None
-    for ch in word:
-        if ch != prev:
-            if prev:
-                result += prev
-            prev = ch
-    if prev:
-        result += prev
+    result += word[0]
+    for ch in word[1:]:
+        if ch.isalpha() and result[len(result) - 1] == ch:
+            continue
+        else:
+            result += ch
     return result
