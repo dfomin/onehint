@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 from onehint.checkers.v1 import APIv1
 from onehint.checkers.v2 import APIv2
+from onehint.checkers.v3 import APIv3
 
 app = FastAPI()
 
@@ -44,11 +45,12 @@ def create_version_router(api_class: Callable) -> APIRouter:
 
 app.include_router(create_version_router(APIv1), prefix="/v1")
 app.include_router(create_version_router(APIv2), prefix="/v2")
+app.include_router(create_version_router(APIv3), prefix="/v3")
 
 
 @app.get("/version")
 def version() -> int:
-    return 2
+    return 3
 
 
 @app.get("/versions_info")
@@ -61,6 +63,10 @@ def versions_info() -> list[VersionInfo]:
         VersionInfo(
             version=2,
             description="Improved english letters mapping"
+        ),
+        VersionInfo(
+            version=3,
+            description="Handling unicode symbols"
         )
     ]
 
