@@ -3,6 +3,7 @@ from typing import Callable
 from fastapi import FastAPI, APIRouter
 from pydantic import BaseModel
 
+from onehint import checkers
 from onehint.checkers.v1 import APIv1
 from onehint.checkers.v2 import APIv2
 from onehint.checkers.v3 import APIv3
@@ -43,14 +44,21 @@ def create_version_router(api_class: Callable) -> APIRouter:
     return router
 
 
-app.include_router(create_version_router(APIv1), prefix="/v1")
-app.include_router(create_version_router(APIv2), prefix="/v2")
-app.include_router(create_version_router(APIv3), prefix="/v3")
-
-
 @app.get("/version")
 def version() -> int:
     return 3
+
+
+def create_latest_router() -> APIRouter:
+    module = getattr(checkers, f"v{version()}")
+    api_version = getattr(module, f"APIv{version()}")
+    return create_version_router(api_version)
+
+
+app.include_router(create_version_router(APIv1), prefix="/v1")
+app.include_router(create_version_router(APIv2), prefix="/v2")
+app.include_router(create_version_router(APIv3), prefix="/v3")
+app.include_router(create_latest_router())
 
 
 @app.get("/versions_info")
