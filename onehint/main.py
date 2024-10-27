@@ -7,6 +7,8 @@ from onehint import checkers
 from onehint.checkers.v1 import APIv1
 from onehint.checkers.v2 import APIv2
 from onehint.checkers.v3 import APIv3
+from onehint.checkers.v4 import APIv4
+from onehint.checkers.v5 import APIv5
 
 app = FastAPI()
 
@@ -46,7 +48,7 @@ def create_version_router(api_class: Callable) -> APIRouter:
 
 @app.get("/version")
 def version() -> int:
-    return 3
+    return 5
 
 
 def create_latest_router() -> APIRouter:
@@ -58,6 +60,8 @@ def create_latest_router() -> APIRouter:
 app.include_router(create_version_router(APIv1), prefix="/v1")
 app.include_router(create_version_router(APIv2), prefix="/v2")
 app.include_router(create_version_router(APIv3), prefix="/v3")
+# app.include_router(create_version_router(APIv4), prefix="/v4")
+app.include_router(create_version_router(APIv5), prefix="/v5")
 app.include_router(create_latest_router())
 
 
@@ -75,7 +79,15 @@ def versions_info() -> list[VersionInfo]:
         VersionInfo(
             version=3,
             description="Handling unicode symbols"
-        )
+        ),
+        # VersionInfo(
+        #     version=4,
+        #     description="Asking ChatGPT"
+        # )
+        VersionInfo(
+            version=5,
+            description="Adjusted thresholds"
+        ),
     ]
 
 
