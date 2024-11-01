@@ -1,5 +1,7 @@
 from abc import ABC
 
+from onehint.statistics.players_statistics import PlayerStatistics
+
 
 class BaseAPIVersion(ABC):
     def find_duplicates(self, round_words: list[str]) -> list[list[int]]:
@@ -10,6 +12,9 @@ class BaseAPIVersion(ABC):
                     duplicates[i].append(j)
                     duplicates[j].append(i)
         return duplicates
+
+    def players_statistics(self, game_id: str) -> str:
+        return PlayerStatistics().statistics(game_id, self.is_duplicates)
 
     def is_duplicates(self, word1: str, word2: str) -> bool:
         raise NotImplementedError
