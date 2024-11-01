@@ -1,3 +1,6 @@
+import math
+
+
 def fuzzy_common_size(word1: str, word2: str, fraction: int = 5) -> int:
     assert len(word1) <= len(word2)
 
@@ -25,3 +28,15 @@ def remove_repeating_letters(word: str) -> str:
         else:
             result += ch
     return result
+
+
+def wilson_score(wins: int, total_games: int, confidence: float = 0.95):
+    if total_games == 0:
+        return 0
+    z = 1.96  # Z-score for 95% confidence
+    phat = wins / total_games
+    score = (
+        (phat + (z*z)/(2*total_games) - z * math.sqrt((phat*(1-phat) + (z*z)/(4*total_games))/total_games))
+        / (1 + (z*z)/total_games)
+    )
+    return score

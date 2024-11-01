@@ -20,7 +20,20 @@ jobs:
       run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
     - name: Build and tag Docker image
-      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/onehint:${{ github.sha }} .
+      env:
+        DATABASE: ${{ secrets.DATABASE }}
+        HOST: ${{ secrets.HOST }}
+        PORT: ${{ secrets.PORT }}
+        USER: ${{ secrets.USER }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+      run: |
+        docker build \
+          --build-arg DATABASE=$DATABASE \
+          --build-arg HOST=$HOST \
+          --build-arg PORT=$PORT \
+          --build-arg USER=$USER \
+          --build-arg PASSWORD=$PASSWORD \
+          -t ${{ secrets.DOCKER_HUB_USERNAME }}/onehint:${{ github.sha }} .
 
     - name: Tag Docker image as latest
       run: docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/onehint:${{ github.sha }} ${{ secrets.DOCKER_HUB_USERNAME }}/onehint:latest
