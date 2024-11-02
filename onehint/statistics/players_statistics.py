@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 import psycopg2
-import pandas as pd
+import polars as pl
 
 from onehint.utils import wilson_score
 
@@ -30,12 +30,11 @@ class DatabaseManager:
         print(host)
         self.conn = psycopg2.connect(database=database, host=host, port=port, user=user, password=password)
 
-    def fetchall(self, game_id: str) -> pd.DataFrame:
+    def fetchall(self, game_id: str) -> pl.DataFrame:
         cursor = self.conn.cursor()
         cursor.execute(QUERY, (game_id,))
         result = cursor.fetchall()
-        df = pd.DataFrame(result)
-        df.columns = [
+        df = pl.DataFrame(result, schema=[
             "RoundId",
             "DictionaryWordId",
             "IsWin",
@@ -44,7 +43,7 @@ class DatabaseManager:
             "Status",
             "Result",
             "Name"
-        ]
+        ])
         return df
 
 
@@ -87,29 +86,29 @@ class PlayerStatistics:
         df = self.database.fetchall(game_id)
         players = defaultdict(PlayerInfo)
         for round_id in df["RoundId"].unique():
-            round_data = df[df["RoundId"] == round_id]
-            if len(round_data[(round_data["Status"] != 8) & (round_data["Role"] == 1)]) > 0:
+            round_data = df.filter(pl.col("RoundId") == round_id)
+            if len(round_data.filter((pl.col("Status") != 8) & (pl.col("Role") == 1))) > 0:
                 continue
-            guesser = round_data[round_data["Role"] == 1].iloc[0]["Name"]
-            is_win = round_data[round_data["Role"] == 1].iloc[0]["IsWin"]
+            guesser = round_data.filter(pl.col("Role") == 1).select("Name").to_series()[0]
+            is_win = round_data.filter(pl.col("Role") == 1).select("IsWin").to_series()[0]
             if is_win:
                 players[guesser].correct_guesses += 1
             players[guesser].guesses_count += 1
 
-            cluers = round_data[(round_data["Role"] == 2) & (round_data["Result"] != 0)]["Name"].tolist()
+            cluers = round_data.filter((pl.col("Role") == 2) & (pl.col("Result") != 0)).select("Name").to_series().to_list()
             for cluer in cluers:
                 players[cluer].hint_count += 1
 
             if is_win:
-                non_clowns = round_data[(round_data["Role"] == 2) & (round_data["Result"] == 1)]["Name"].tolist()
+                non_clowns = round_data.filter((pl.col("Role") == 2) & (pl.col("Result") == 1)).select("Name").to_series().to_list()
                 for cluer in non_clowns:
                     players[cluer].good_hint_count += 1
 
-            clowns = round_data[(round_data["Role"] == 2) & (round_data["Result"] == 2)]["Name"].tolist()
+            clowns = round_data.filter((pl.col("Role") == 2) & (pl.col("Result") == 2)).select("Name").to_series().to_list()
             for cluer in clowns:
                 players[cluer].clown_count += 1
 
-            clown_clues = round_data[(round_data["Role"] == 2) & (round_data["Result"] == 2)]["Word"].tolist()
+            clown_clues = round_data.filter((pl.col("Role") == 2) & (pl.col("Result") == 2)).select("Word").to_series().to_list()
             assert len(clowns) == len(clown_clues)
 
             for i in range(len(clowns)):
