@@ -30,7 +30,7 @@ class DatabaseManager:
         print(host)
         self.conn = psycopg2.connect(database=database, host=host, port=port, user=user, password=password)
 
-    def fetchall(self, game_id: str) -> pl.DataFrame:
+    def fetchall(self, game_id: int) -> pl.DataFrame:
         cursor = self.conn.cursor()
         cursor.execute(QUERY, (game_id,))
         result = cursor.fetchall()
@@ -82,7 +82,7 @@ class PlayerStatistics:
     def __init__(self):
         self.database = DatabaseManager()
 
-    def statistics(self, game_id: str, is_duplicates: Callable[[str, str], bool]) -> str:
+    def statistics(self, game_id: int, is_duplicates: Callable[[str, str], bool]) -> str:
         df = self.database.fetchall(game_id)
         players = defaultdict(PlayerInfo)
         for round_id in df["RoundId"].unique():

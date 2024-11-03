@@ -32,7 +32,7 @@ class VersionInfo(BaseModel):
 
 
 class Game(BaseModel):
-    game_id: str
+    game_id: int
 
 
 def create_version_router(api_class: Callable) -> APIRouter:
@@ -47,7 +47,7 @@ def create_version_router(api_class: Callable) -> APIRouter:
     def is_duplicates(pair: WordPair) -> bool:
         return api.is_duplicates(pair.word1, pair.word2)
 
-    @router.post("/statistics")
+    @router.get("/statistics")
     def statistics(game: Game) -> str:
         return api.players_statistics(game.game_id)
 

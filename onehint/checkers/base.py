@@ -13,7 +13,7 @@ class BaseAPIVersion(ABC):
                     duplicates[j].append(i)
         return duplicates
 
-    def players_statistics(self, game_id: str) -> str:
+    def players_statistics(self, game_id: int) -> str:
         return PlayerStatistics().statistics(game_id, self.is_duplicates)
 
     def is_duplicates(self, word1: str, word2: str) -> bool:
