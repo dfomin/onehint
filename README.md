@@ -12,4 +12,12 @@ curl -X GET "http://127.0.0.1:8000/statistics" -H "Content-Type: application/jso
 # player1 0.5 50%
 # ...
 # etc
+
+# Run in docker-compose
+# environment:
+#     DATABASE: ${}
+#     HOST: ${}
+#     PORT: ${}
+#     USER: ${}
+#     PASSWORD: ${}
 ```
