@@ -120,12 +120,12 @@ class PlayerStatistics:
         response = "Guesses:\n"
         values = [(name, player.guess_score(), player.guess_ratio()) for name, player in players.items()]
         for result in sorted(values, key=lambda x: -x[1]):
-            response += f"{result[0]} {result[1]:.2f} {round(100 * result[2])}%\n"
+            response += f"{result[0]} {result[1]:.2f} {round(100 * result[2], 2)}%\n"
 
         response += "\nClowns:\n"
         values = [(name, player.clown_ratio()) for name, player in players.items()]
         for result in sorted(values, key=lambda x: x[1]):
-            response += f"{result[0]} {round(100 * result[1])}%\n"
+            response += f"{result[0]} {round(100 * result[1], 2)}%\n"
 
         response += "\nClown pairs:\n"
         for name, player in players.items():
