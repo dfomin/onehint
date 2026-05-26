@@ -50,6 +50,11 @@ def create_version_router(api_class: Callable) -> APIRouter:
     return router
 
 
+@app.get("/health")
+def health() -> dict:
+    return {"status": "ok"}
+
+
 @app.get("/version")
 def version() -> int:
     return 5
