@@ -30,6 +30,22 @@ def remove_repeating_letters(word: str) -> str:
     return result
 
 
+def collapse_long_repeating_letters(word: str) -> str:
+    result = ""
+    i = 0
+    while i < len(word):
+        ch = word[i]
+        run = 1
+        while i + run < len(word) and word[i + run] == ch:
+            run += 1
+        if ch.isalpha() and run >= 3:
+            result += ch
+        else:
+            result += ch * run
+        i += run
+    return result
+
+
 def wilson_score(wins: int, total_games: int, confidence: float = 0.95):
     if total_games == 0:
         return 0

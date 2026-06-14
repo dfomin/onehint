@@ -1,2 +1,30 @@
+[project]
+name = "onehint"
+version = "0.1.0"
+description = "FastAPI service for the Just One word game: duplicate clue detection and per-game player statistics"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.112.2",
+    "uvicorn>=0.30.6",
+    "pydantic>=2.8.2",
+    "levenshtein>=0.25.1",
+    "psycopg2-binary>=2.9.10",
+    "polars>=1.12.0",
+    "openai>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.2",
+]
+
+[build-system]
+requires = ["uv_build>=0.7.16,<0.8.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
 [tool.pytest.ini_options]
 disable_test_id_escaping_and_forfeit_all_rights_to_community_support = true
